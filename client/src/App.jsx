@@ -1,28 +1,31 @@
-// import { useState } from "react";
-// import reactLogo from "./assets/react.svg";
-// import viteLogo from "/vite.svg";
-// import "./App.css";
+import { useEffect, useState } from "react";
+import BlockQuote from "./components/BlockQuote";
+import Header from "./components/Header";
 
 function App() {
-  // const [count, setCount] = useState(0);
+  const [quotes, setQuotes] = useState([]);
+
+  useEffect(() => {
+    async function fetchQuotes() {
+      const fetchApi = await fetch("/api");
+      const quotesData = await fetchApi.json();
+      // console.log(quotesData);
+      setQuotes(quotesData)
+    }
+    fetchQuotes()
+  },[])
 
   return (
-    <>
-      <header className="px-4 py-2 bg-rose-500">
-        <h4 className="font-semibold text-xl">Quotes Ready!</h4>
-      </header>
-      {/* <h1 className="text-3xl font-bold underline">
-        Quotes will Display here!
-      </h1> */}
+    <div className="bg-zinc-800 min-h-screen">
+      <Header />
 
-      <div className="bg-white rounded p-10 shadow">
-        <blockquote className="text-xl italic font-semibold text-gray-900">
-          "Flowbite is just awesome. It contains tons of predesigned components
-          and pages starting from login screen to complex dashboard. Perfect
-          choice for your next SaaS application."
-        </blockquote>
-      </div>
-    </>
+      <main className="m-10 space-y-4">
+        {quotes.length === 0 ? <div className="bg-white p-5 rounded">No Quotes Available!</div> : ("")}
+        {quotes.map((quote) => {
+          return <BlockQuote key={quote.id} quote={quote.quote} author={quote.author} />;
+        })}
+      </main>
+    </div>
   );
 }
 
